@@ -21,6 +21,7 @@
 import sys
 import asyncio
 import os
+import shutil
 from googletrans import Translator
 from gtts import gTTS
 from pydub import AudioSegment
@@ -45,6 +46,7 @@ async def translate_text(text, src_lang:str, dest_lang:str):
     except Exception as e:
         return f"An error occurred: {e}"
 
+output_folder = "audio_output"
 def generate_audio(text_src:str, src_lang:str, text_dest:str, dest_lang:str):
 
     # Convert the texts to audio using gTTS
@@ -52,7 +54,6 @@ def generate_audio(text_src:str, src_lang:str, text_dest:str, dest_lang:str):
     tts2 = gTTS(text=text_dest, lang=dest_lang, slow=False)
 
     # Check if 'output' folder exists, otherwise create it
-    output_folder = "output"
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
         print(f"Created folder: {output_folder}")
@@ -96,6 +97,9 @@ if __name__ == "__main__":
             exit()
         i = 0
         print("start generate audio\n")
+        if os.path.exists(output_folder):
+            shutil.rmtree(output_folder)
+
         for i in range(0, len(words)):
             generate_audio(words[i], from_lang, trans_words[i], to_lang)
             i+=1
